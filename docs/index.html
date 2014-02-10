@@ -4,6 +4,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="charset" content="utf-8" />
 	<title>gx-zeyos</title>
+
+	<!-- MooTools -->
+	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-core-1.4.5-yc.js"></script>
+	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-more-1.4.0.1-yc.js"></script>
+
+	<!-- Gx Core -->
+	<script language="JavaScript" type="text/javascript" src="../../gx-core/dist/gx-core.js"></script>
+
+	<!-- Site-specific scripts & styles -->
+	<link rel="stylesheet" type="text/css" href="../dist/gx-zeyos.css" />
+
+
 	<script src="../src/gx.zeyos.js"></script>
 <script src="../src/classes/Checklist.js"></script>
 <script src="../src/classes/Client.js"></script>
@@ -15,6 +27,7 @@
 <script src="../src/classes/MasterPanel.js"></script>
 <script src="../src/classes/MonthPicker.js"></script>
 <script src="../src/classes/Msgbox.js"></script>
+<script src="../src/classes/Panel.js"></script>
 <script src="../src/classes/Popup.js"></script>
 <script src="../src/classes/Request.js"></script>
 <script src="../src/classes/Search.js"></script>
@@ -26,10 +39,300 @@
 <script src="../src/classes/Toggle.js"></script>
 	<script>
 		window.addEvent('domready', function() {
-			console.log('hello world');
+			/* gx.zeyos.Checklist
+			-------------------------------------- */
+			(function () {
+	var Checklist = new gx.zeyos.Checklist(null, {
+		'data': [
+			{'ID': 0, 'label': 'Test1'},
+			{'ID': 1, 'label': 'Test2'},
+			{'ID': 2, 'label': 'Test3'}
+		]
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Checklist'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Checklist.display()},
+		{'class': 'p-10 bg-E', 'children': {
+			btnChecklist : {'tag': 'button', 'html': 'Get value', 'onClick': function() {
+				alert(JSON.encode(Checklist.getValues()));
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Table
+			-------------------------------------- */
+			(function() {
+	var data = [
+		{'customername': 'HyperFlyer', 'customernum': '1003', 'lastmodified': '1220454105'},
+		{'customername': 'InScreen Design', 'customernum': '1004', 'lastmodified': '1220454283'},
+		{'customername': 'GlobalSpin Travel Agency', 'customernum': '1005', 'lastmodified': '1220454466'},
+		{'customername': 'nTronic AG', 'customernum': '1001', 'lastmodified': '1220453517'},
+		{'customername': 'CleanTexx', 'customernum': '1002', 'lastmodified': '1220454105'},
+	];
+	var Table = new gx.zeyos.Table(null, {
+		'cols': [
+			{'label': 'Name', 'id': 'customername'},
+			{'label': 'Number', 'id': 'customernum', 'text-align': 'right'},
+			{'label': 'Last change', 'id': 'lastmodified'}
+		],
+		'structure': function(row) {
+			return [
+				row.customername,
+				row.customernum,
+				new Date(row.lastmodified * 1000).format('%d.%m.%Y %H:%M')
+			];
+		},
+		'data': data,
+		'onClick': function(row) {
+			alert(JSON.encode(row));
+		},
+		'onFilter': function(col) {
+			alert(JSON.encode(col));
+		}
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Table'},
+		{'class': 'b-1', 'child': Table.display()},
+		{'class': 'p-10 bg-E', 'children': {
+			btnTableEmpty : {'tag': 'button', 'class': 'm_r-5', 'html': 'Empty', 'onClick': function() {
+				Table.empty();
+			}},
+			btnTableSet : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set data', 'onClick': function() {
+				Table.setData(data);
+			}},
+			btnAddData : {'tag': 'button', 'html': 'Add data', 'onClick': function() {
+				var temp = Array.clone(data);
+				temp.push({'customername': 'Another One', 'customernum': '1003943295792836012345719837632809467', 'lastmodified': '1220454105'});
+				Table.setData(temp);
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Datebox
+			-------------------------------------- */
+			(function () {
+	var Datebox = new gx.zeyos.Datebox(null, {
+		'timestamp': 0,
+		'unit': 'milliseconds',
+		'format': ['d', '.', 'M', '.', 'y', '&nbsp;', 'h', ':', 'i'],
+		'month': ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Jun.', 'Jul.', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.']
+	});
+
+	var txtTimestamp = new Element('input', {'type': 'number', 'value': (new Date()).getTime()});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Datebox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Datebox.display()},
+		{'class': 'p-10 bg-E', 'children': {
+			btnDateboxSet : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set date', 'onClick': function() {
+				Datebox.set(txtTimestamp.get('value'));
+			}},
+			btnDateboxGet : {'tag': 'button', 'class': 'm_r-5', 'html': 'Get date', 'onClick': function() {
+				alert(Datebox.get());
+			}},
+			label: {'tag': 'label', 'class': 'm_l-10 m_r-5', 'html': 'Timestamp:'},
+			ts : txtTimestamp
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Dropdown
+			-------------------------------------- */
+			(function () {
+	var Dropdown = new gx.zeyos.Dropdown(null, {
+		'label': 'Sample menu',
+		'items': {
+			'test1': 'Test 1',
+			'test2': 'Test 2',
+			'test3': 'Test 3',
+			'test4': 'Test 4',
+			'test5': 'Test 5',
+			'test6': 'Test 6'
+		}
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Dropdown'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Dropdown.display()},
+		{'class': 'p-10 bg-E', 'children': {
+			btnGetValue : {'tag': 'button', 'html': 'Get value', 'onClick': function() {
+				alert(Dropdown.getValue());
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Groupbox
+			-------------------------------------- */
+			(function () {
+	var Groupboxes = [
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'First Groupbox', 'open': true}),
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'Second Groupbox'}),
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'Third'})
+	];
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Groupbox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'children': Groupboxes},
+		{'class': 'p-10 bg-E', 'children': {
+			btnToggle : {'tag': 'button', 'class': 'm_r-5', 'html': 'Toggle all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.toggle();
+				});
+			}},
+			btnOpen : {'tag': 'button', 'class': 'm_r-5', 'html': 'Open all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.open();
+				});
+			}},
+			btnClose : {'tag': 'button', 'html': 'Close all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.close();
+				});
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Msgbox
+			-------------------------------------- */
+			(function () {
+	var Msgbox = new gx.zeyos.Msgbox();
+
+	var txtMessage = new Element('input', {'type': 'text'});
+	var selDropdown = new gx.zeyos.Dropdown(null, {
+		'label': 'Icon class',
+		'items': {
+			'success': 'Success',
+			'error': 'Error',
+			'warning': 'Warning'
+		}
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Msgbox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'children': [
+			{'tag': 'label', 'html': 'Message text:'},
+			txtMessage,
+			selDropdown
+		]},
+		{'class': 'p-10 bg-E', 'children': {
+			showmsg : {'tag': 'button', 'html': 'Show message', 'onClick': function() {
+				Msgbox.show(txtMessage.value, selDropdown.getValue());
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Popup
+			-------------------------------------- */
+			(function () {
+	var Popup = new gx.zeyos.Popup({
+		'width': 300
+	});
+
+	var txtContent = new Element('textarea');
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Popup'},
+		{'class': 'p-10 b_t-1 b_b-1', 'children': [
+			'Enter your HTML content into the textarea:',
+			txtContent
+		]},
+		{'class': 'p-10 bg-E', 'children': {
+			btnOpen : {'tag': 'button', 'html': 'Open Popup', 'onClick': function() {
+				Popup.setContent(txtContent.get('value'));
+				Popup.show();
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Select
+			-------------------------------------- */
+			(function () {
+	var zSelect = new gx.zeyos.Select(null, {
+		'url': window.location.href.substring(0, window.location.href.lastIndexOf("/")+1) + 'data/select.json',
+		'width': '300px'
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Select'},
+		{'class': 'p-10 b_t-1 b_b-1', 'children': [
+			{'tag': 'label', 'html': 'Selection demo:'},
+			zSelect
+		]},
+		{'class': 'p-10 bg-E', 'children': {
+			btnSelectValue : {'tag': 'button', 'html': 'Get selection', 'onClick': function() {
+				alert(JSON.encode(zSelect.getSelected()));
+			}},
+			btnSelectReset : {'tag': 'button', 'html': 'Reset', 'onClick': function() {
+				zSelect.set();
+			}}
+		}}
+	]}));
+})();
+
+
+			/* gx.zeyos.Tabbox
+			-------------------------------------- */
+			(function () {
+	var Tabbox = new gx.zeyos.Tabbox(null, {
+		'height': 150,
+		'frames': [
+			{'name': 'tab1', 'title': 'First Tab', 'content':
+				__('Nulla facilisi. Nunc volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut sit amet orci vel mauris blandit vehicula.')
+			},
+			{'name': 'tab2', 'title': 'Second Tab', 'content':
+				__('Donec semper, sem nec tristique tempus, justo neque commodo nisl, ut gravida sem tellus suscipit nunc. Aliquam erat volutpat. Ut tincidunt pretium elit. Aliquam pulvinar.')
+			},
+			{'name': 'tab3', 'title': 'Third Tab', 'content':
+				__('Donec dapibus orci sit amet elit. Maecenas rutrum ultrices lectus. Aliquam suscipit, lacus a iaculis adipiscing, eros orci pellentesque nisl, non pharetra dolor urna nec dolor.')
+			}
+		]
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Tabbox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Tabbox}
+	]}));
+})();
+
 
 		});
 	</script>
+
+	<style type="text/css">
+		body {
+			padding: 20px;
+		}
+		h5 {
+			font-size: 14px;
+			font-weight: bold;
+			margin-top: 20px;
+			margin-bottom: 10px;
+		}
+	</style>
 </head>
 
 <body id="body">

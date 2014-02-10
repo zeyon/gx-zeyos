@@ -83,7 +83,7 @@ gx.zeyos.MasterPanel = new Class({
 	},
 
 	setTitle: function(title) {
-		if ( isString(title) ) {
+		if ( gx.util.isString(title) ) {
 			this._title.set('html', title);
 		} else {
 			this._title.empty();
@@ -92,7 +92,7 @@ gx.zeyos.MasterPanel = new Class({
 	},
 
 	setContent: function(content) {
-		if ( isString(content) ) {
+		if ( gx.util.isString(content) ) {
 			this._content.set('html', content);
 		} else {
 			this._content.empty();

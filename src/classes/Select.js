@@ -112,11 +112,11 @@ gx.zeyos.Select = new Class({
 				root.hide.delay(500, root);
 			});
 
-			if (isFunction(this.options.onRequest))
+			if (gx.util.isFunction(this.options.onRequest))
 				this.addEvent('request', this.options.onRequest);
-			if (isFunction(this.options.onSelect))
+			if (gx.util.isFunction(this.options.onSelect))
 				this.addEvent('select', this.options.onSelect);
-			if (isFunction(this.options.onNoSelect))
+			if (gx.util.isFunction(this.options.onNoSelect))
 				this.addEvent('noselect', this.options.onNoSelect);
 
 			this._display.textbox.set('value');

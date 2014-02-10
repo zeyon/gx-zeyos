@@ -8,9 +8,10 @@ Components
 ----------
 
 
+### Checklist ###
 
 ```js
-console.log('hello');
+console.log('hello world');
 
 ```
 

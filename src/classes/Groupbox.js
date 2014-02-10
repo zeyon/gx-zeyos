@@ -7,15 +7,13 @@
  *
  * @option {string} title: The title of the groupbox
  * @option {bool} show: Show or collapse the groupbox
- *
- * @sample Groupbox Simple groupbox example.
  */
 gx.zeyos.Groupbox = new Class({
 	gx: 'gx.zeyos.Groupbox',
 	Extends: gx.ui.Container,
 	options: {
 		'title': '',
-		'show': true
+		'open': true
 	},
 	_isOpen: true,
 	initialize: function(display, options) {
@@ -31,32 +29,32 @@ gx.zeyos.Groupbox = new Class({
 			this._display.bar.addEvent('click', function() {
 				this.toggle();
 			}.bind(this));
-			if (this.options.show)
+			if (this.options.open)
 				this._display.bar.addClass('act');
 		} catch(e) { gx.util.Console('gx.zeyos.Groupbox->initialize', e.message); }
 	},
 
 	/**
 	 * @method toggle
-	 * @description Toggles the visibility of the groupbox (hide/show)
+	 * @description Toggles the visibility of the groupbox (hide/open)
 	 */
 	toggle: function() {
 		this._display.bar.toggleClass('act');
 	},
 
 	/**
-	 * @method show
-	 * @description Shows the groupbox
+	 * @method open
+	 * @description Open the groupbox
 	 */
-	show: function() {
+	open: function() {
 		this._display.bar.addClass('act');
 	},
 
 	/**
-	 * @method hide
-	 * @description Hides the groupbox
+	 * @method close
+	 * @description Close the groupbox
 	 */
-	hide: function() {
+	close: function() {
 		this._display.bar.removeClass('act');
 	},
 

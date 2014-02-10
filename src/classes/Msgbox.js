@@ -55,11 +55,11 @@ gx.zeyos.Msgbox = new Class({
 	setContent: function(content) {
 		try {
 			this._display.content.empty();
-			if (isNode(content)) {
+			if (gx.util.isNode(content)) {
 				this._display.content.emptyy();
 				this._display.content.adopt(content);
 			}
-			else if (isString(content)) {
+			else if (gx.util.isString(content)) {
 				this._display.content.set('html', content);
 			}
 		} catch(e) { gx.util.Console('gx.zeyos.Msgbox->setContent', e.message); }

@@ -43,18 +43,18 @@ gx.zeyos.Tabbox = new Class({
 			this._display.root.adopt(this._display.content);
 
 			var frames = this.options.frames;
-			if (isArray(frames)) {
+			if (gx.util.isArray(frames)) {
 				frames.each(function(item) {
 					root.addTab(item.name, item.title, item.content);
 				});
 			}
 
-			if (isFunction(this.options.onChange))
+			if (gx.util.isFunction(this.options.onChange))
 				this.addEvent('change', this.options.onChange);
 
-			if (isString(this.options.show))
+			if (gx.util.isString(this.options.show))
 				this.openTab(this.options.show);
-			else if(isNumber(this.options.show)) {
+			else if(gx.util.isNumber(this.options.show)) {
 				var index = this.getIndexName(this.options.show);
 				if (index)
 					this.openTab(index);
@@ -81,11 +81,21 @@ gx.zeyos.Tabbox = new Class({
 	addTab: function(name, title, content) {
 		var root = this;
 		try {
-			if (isString(content))
-				content = new Element('div', {'html': content});
+			switch (typeOf(content)) {
+				case 'string':
+					content = new Element('div', {'html': content});
+					break;
+				case 'textnode':
+					content = (new Element('div')).adopt(content);
+					break;
+				case 'element':
+					break;
+				default:
+					return false;
+			}
 
-			if (isString(name) && isString(title) && isNode(content)) {
-				if (!isNode(this._tabs[name])) {
+			if (gx.util.isString(name) && gx.util.isString(title) && gx.util.isNode(content)) {
+				if (!gx.util.isNode(this._tabs[name])) {
 					var link = new Element('fieldset', {'class': 'tab_item', 'html': title.replace(/ /g, '&nbsp;')});
 					content.setStyle('display', 'none');
 					this._frames[name] = content;
@@ -112,7 +122,7 @@ gx.zeyos.Tabbox = new Class({
 	 */
 	closeTab: function(name) {
 		try {
-			if (isNode(this._tabs[name])) {
+			if (gx.util.isNode(this._tabs[name])) {
 				this._tabs[name].removeClass('act');
 				this._frames[name].setStyle('display', 'none');
 				this._active = false;
@@ -127,7 +137,7 @@ gx.zeyos.Tabbox = new Class({
 	 */
 	openTab: function(name) {
 		try {
-			if (isNode(this._tabs[name])) {
+			if (gx.util.isNode(this._tabs[name])) {
 				if (this._active)
 					this.closeTab(this._active);
 				this._active = name;

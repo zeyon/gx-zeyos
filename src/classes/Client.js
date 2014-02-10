@@ -14,15 +14,15 @@ gx.zeyos.Client = new Class({
 	options: {
 		'url': './remotecall.php'
 	},
-	
+
 	post: function(path, data, callback, resulttype) {
 		this.request(data, 'POST', callback, resulttype, path);
 	},
-	
+
 	get: function(path, data, callback, resulttype) {
 		this.request(data, 'GET', callback, resulttype, path);
 	},
-	
+
 	/**
 	 * @method request
 	 * @description Performs a request and displays the status
@@ -48,7 +48,7 @@ gx.zeyos.Client = new Class({
 				ZeyOSApi.showMsgRuntimeError('Connection error! Could not retrieve data from server!');
 			}
 		});
-		if (isFunction(callback)) {
+		if (gx.util.isFunction(callback)) {
 			req.addEvent('complete', function(res) {
 				if (resulttype != null) {
 					res = JSON.decode(res);
@@ -63,7 +63,7 @@ gx.zeyos.Client = new Class({
 				}
 				callback.run([res], root);
 			})
-		} else if (isObject(callback)) {
+		} else if (gx.util.isObject(callback)) {
 			for (evtType in callback)
 				req.addEvent(evtType, callback[evtType]);
 		}

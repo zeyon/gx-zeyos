@@ -60,7 +60,7 @@ gx.zeyos.Checklist = new Class({
 
 			if (this.options.url)
 				this.load(this.options.url, this.options.requestData);
-			if (isArray(this.options.data))
+			if (gx.util.isArray(this.options.data))
 				this.buildList(this.options.data);
 		} catch(e) { gx.util.Console('gx.zeyos.Checklist->initialize', e.message); }
 	},
@@ -183,7 +183,7 @@ gx.zeyos.Checklist = new Class({
 				'onSuccess': function(res) {
 					try {
 						var obj = JSON.decode(res);
-						if (isArray(obj)) {
+						if (gx.util.isArray(obj)) {
 							root.buildList(obj);
 						} else {
 							gx.util.Console('gx.zeyos.Checklist->search', 'Invalid server answer: ' + res);

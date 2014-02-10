@@ -4,12 +4,70 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="charset" content="utf-8" />
 	<title>gx-zeyos</title>
+
+	<!-- MooTools -->
+	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-core-1.4.5-yc.js"></script>
+	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-more-1.4.0.1-yc.js"></script>
+
+	<!-- Gx Core -->
+	<script language="JavaScript" type="text/javascript" src="../../gx-core/dist/gx-core.js"></script>
+
+	<!-- Site-specific scripts & styles -->
+	<link rel="stylesheet" type="text/css" href="../dist/gx-zeyos.css" />
+
+
 	<!-- include: "type": "js", "files": ["src/*.js", "src/classes/*.js"] -->
 	<script>
 		window.addEvent('domready', function() {
+			/* gx.zeyos.Checklist
+			-------------------------------------- */
 			@@include('demos/Checklist.demo.js')
+
+			/* gx.zeyos.Table
+			-------------------------------------- */
+			@@include('demos/Table.demo.js')
+
+			/* gx.zeyos.Datebox
+			-------------------------------------- */
+			@@include('demos/Datebox.demo.js')
+
+			/* gx.zeyos.Dropdown
+			-------------------------------------- */
+			@@include('demos/Dropdown.demo.js')
+
+			/* gx.zeyos.Groupbox
+			-------------------------------------- */
+			@@include('demos/Groupbox.demo.js')
+
+			/* gx.zeyos.Msgbox
+			-------------------------------------- */
+			@@include('demos/Msgbox.demo.js')
+
+			/* gx.zeyos.Popup
+			-------------------------------------- */
+			@@include('demos/Popup.demo.js')
+
+			/* gx.zeyos.Select
+			-------------------------------------- */
+			@@include('demos/Select.demo.js')
+
+			/* gx.zeyos.Tabbox
+			-------------------------------------- */
+			@@include('demos/Tabbox.demo.js')
 		});
 	</script>
+
+	<style type="text/css">
+		body {
+			padding: 20px;
+		}
+		h5 {
+			font-size: 14px;
+			font-weight: bold;
+			margin-top: 20px;
+			margin-bottom: 10px;
+		}
+	</style>
 </head>
 
 <body id="body">
