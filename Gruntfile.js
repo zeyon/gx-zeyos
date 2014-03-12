@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			js: {
-				files: ['src/*.js'],
+				files: ['src/*.js', 'src/classes/*.js'],
 				tasks: ['concat'],
 				options: {
 					// livereload: true,
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 				tasks: ['less']
 			},
 			docs: {
-				files: ['docs/demos/*.js'],
+				files: ['docs/demos/*.js', 'docs/index.tpl.html'],
 				tasks: ['includeSource:js', 'includereplace:demo']
 			}
 		},

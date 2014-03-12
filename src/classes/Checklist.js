@@ -90,7 +90,7 @@ gx.zeyos.Checklist = new Class({
 		try {
 			var elem = {
 				'value': this.options.listFormat(item),
-				'input': new gx.zeyos.Toggle(null, item[this.options.listValue])
+				'input': new gx.zeyos.Toggle(null, {'value': item[this.options.listValue]})
 			}
 
 			elem.row = new Element('tr', {'class': 'em'+this._bg});

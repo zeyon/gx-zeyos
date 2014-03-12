@@ -20,6 +20,8 @@ gx.zeyos.Toggle = new Class({
 	},
 
 	initialize: function(display, options) {
+		if (display == null)
+			display = new Element('fieldset');
 		this.parent(display, options);
 
 		var root = this;
