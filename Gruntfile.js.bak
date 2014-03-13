@@ -119,8 +119,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-include-replace');
 	grunt.loadNpmTasks('grunt-include-source');
 
+
+	grunt.registerTask('less'    , ['less']);
 	grunt.registerTask('default' , ['concat', 'less', 'uglify']);
 	grunt.registerTask('dev'     , ['includeSource:js', 'includereplace:demo', 'watch']);
 	grunt.registerTask('demo'    , ['includeSource:js', 'includereplace:demo']);
 	grunt.registerTask('readme'  , ['includereplace:readme']);
+	grunt.registerTask('validate', ['jsvalidate']);
 };
