@@ -1,0 +1,52 @@
+#icons .row {
+  margin-left: -20px;
+  *zoom: 1;
+}
+#icons .row:before,
+#icons .row:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+#icons .row:after {
+  clear: both;
+}
+#icons .row > div {
+  width: 220px;
+  float: left;
+  min-height: 1px;
+  margin-left: 20px;
+}
+
+#icons .the-icons {
+  font-size: 14px;
+  line-height: 24px;
+}
+#icons .switch {
+  padding: 10px 20px;
+  float: right;
+  background: #f0ecec;
+  border: 1px solid #bfbfbf;
+}
+#icons .switch label {
+  color: #666;
+}
+#icons .switch label input {
+  margin-right: 0.3em;
+}
+#icons .codesOn .i-name {
+  display: none;
+}
+#icons .codesOn .i-code {
+  display: inline;
+}
+#icons .i-code {
+  display: none;
+}
+
+body > div {
+  width: 940px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  margin: 0 auto;
+}

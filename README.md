@@ -7,12 +7,22 @@ Gx is an extensible component library build on MooTools. The ZeyOS module includ
 Components
 ----------
 
-
-### Checklist ###
+### gx.zeyos.Select ###
 
 ```js
-console.log('hello world');
+@@include('demos/Select.demo.js')
+```
 
+### gx.zeyos.Table ###
+
+```js
+@@include('demos/Table.demo.js')
+```
+
+### gx.zeyos.Checklist ###
+
+```js
+@@include('demos/Checklist.demo.js')
 ```
 
 

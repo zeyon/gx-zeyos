@@ -40,7 +40,9 @@ gx.zeyos.Table = new Class({
 		'scroll'      : true,
 		'autoresize'  : true,
 		'selectable'  : false,
-		'checkOnClick': true
+		'checkOnClick': true,
+		'sortable'    : false,
+		'height'      : '400px'
 	},
 	_cols: [],
 	_rows: [],
@@ -69,13 +71,12 @@ gx.zeyos.Table = new Class({
 			);
 
 			this.buildCols();
-			this.setData(this.options.data);
 
 			if (this.options.scroll) {
 				this._display.header = new Element('table', {'class': 'tbl'});
 				this._display.header.inject(this._display.root, 'top');
 				this._display.header.adopt(this._display.thead);
-				this._display.wrapper = new Element('div', {'styles': {'overflow-y': 'scroll'}});
+				this._display.wrapper = new Element('div', {'styles': {'overflow-y': 'scroll', 'height': this.options.height}});
 				this._display.wrapper.wraps(this._display.table);
 
 				this._display.emptyCol = new Element('th');
@@ -90,6 +91,9 @@ gx.zeyos.Table = new Class({
 						this.syncColWith();
 					}.bind(this));
 				}
+				this.addEvent('complete', function() {
+					this.syncColWith();
+				}.bind(this));
 			}
 
 			if (this.options.selectable && this.options.checkOnClick) {
@@ -99,6 +103,8 @@ gx.zeyos.Table = new Class({
 					row.checkbox.checked = !row.checkbox.checked;
 				}.bind(this));
 			}
+
+			this.setData(this.options.data);
 
 			//window.addEvent('resize', this.adoptSizeToHead.bind(this));
 		} catch(e) {
@@ -112,6 +118,9 @@ gx.zeyos.Table = new Class({
 	 * @description Synchronize the column width
 	 */
 	syncColWith: function() {
+		if (!this.options.scroll)
+			return;
+
 		var scrollWidth = this._display.header.getSize().x - this._display.table.getSize().x;
 		this._display.emptyCol.setStyle('width', scrollWidth);
 		// this._display.emptyCol.setStyle('background', 'red');
@@ -133,7 +142,6 @@ gx.zeyos.Table = new Class({
 	 * @param {array} cols An array of columns
 	 */
 	buildCols: function(cols) {
-		var root = this;
 		try {
 			if (this.options.selectable) {
 				this._display.checkall = new Element('input', {'type': 'checkbox'});
@@ -170,12 +178,12 @@ gx.zeyos.Table = new Class({
 						break;
 				}
 
-				if (col.filter != null || col.filterable != false) {
+				if ((col.filter != null || col.filterable != false) && this.options.sortable) {
 					col.th.set('data-sort', '-' + col.id );
 					col.indicator = col.th;
 					col.th.addEvent('click', function() {
-						root.setSort(col);
-					});
+						this.setSort(col);
+					}.bind(this));
 				}
 
 				if (col['text-align'] != null)
@@ -186,17 +194,17 @@ gx.zeyos.Table = new Class({
 				if (col.className != null)
 					col.th.set('class', col.className);
 				if (col.filter != null)
-					root.setSort(col, col.filter, 1);
+					this.setSort(col, col.filter, 1);
 
-				root._display.theadRow.adopt(col.th);
-				root._cols.push(col);
-			});
+				this._display.theadRow.adopt(col.th);
+				this._cols.push(col);
+			}.bind(this));
 			this._colspan = this.options.cols.length;
 			// Add one more col to header which automatically scale with of scroll bar width
 			// Set default width 16px in case no data will be add at first
 			// Erase when data will be add to get automatically scaled.
 			//this._scrollBarCol = new Element('th', {'class': ''});
-			root._display.theadRow.adopt(this._scrollBarCol);
+			this._display.theadRow.adopt(this._scrollBarCol);
 		} catch(e) {
 			e.message = 'gx.zeyos.Table->buildCols: ' + e.message;
 			throw e;

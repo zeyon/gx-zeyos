@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 				tasks: ['less']
 			},
 			docs: {
-				files: ['docs/demos/*.js', 'docs/index.tpl.html'],
+				files: ['docs/demos/*.js', 'docs/index.tpl.html', 'docs/icons.html'],
 				tasks: ['includeSource:js', 'includereplace:demo']
 			}
 		},

@@ -14,18 +14,23 @@
 
 	<!-- Site-specific scripts & styles -->
 	<link rel="stylesheet" type="text/css" href="../dist/gx-zeyos.css" />
+	<link rel="stylesheet" type="text/css" href="demo.css" />
 
 
 	<!-- include: "type": "js", "files": ["src/*.js", "src/classes/*.js"] -->
 	<script>
 		window.addEvent('domready', function() {
-			/* gx.zeyos.Checklist
+			/* gx.zeyos.Select
 			-------------------------------------- */
-			//@include('demos/Checklist.demo.js')
+			@@include('demos/Select.demo.js')
 
 			/* gx.zeyos.Table
 			-------------------------------------- */
 			@@include('demos/Table.demo.js')
+
+			/* gx.zeyos.Checklist
+			-------------------------------------- */
+			@@include('demos/Checklist.demo.js')
 
 			/* gx.zeyos.Datebox
 			-------------------------------------- */
@@ -47,9 +52,7 @@
 			-------------------------------------- */
 			//@include('demos/Popup.demo.js')
 
-			/* gx.zeyos.Select
-			-------------------------------------- */
-			//@include('demos/Select.demo.js')
+
 
 			/* gx.zeyos.Tabbox
 			-------------------------------------- */
@@ -72,7 +75,6 @@
 
 <body id="body">
 
-
-
+@@include('icons.html')
 </body>
 </html>
