@@ -85,6 +85,7 @@ gx.zeyos.Permission = new Class({
 			// Private
 			this._display.select._display.textbox.set('placeholder', '(' + this._labels.private + ')');
 			this._display.indicator.set('html', '(' + this._labels.private + ')');
+			this._display.select.set();
 			this._display.select.disable();
 			this._display.checkbox.checked = false;
 			this._shared = false;
