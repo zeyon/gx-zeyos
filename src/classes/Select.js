@@ -586,7 +586,7 @@ gx.zeyos.SelectFilter = new Class({
 	/**
 	 * @method showLoader
 	 * @description Show the loader icon
-	 * @return gx.zeyos.SelectDyn
+	 * @return gx.zeyos.SelectFilter
 	 */
 	showLoader: function() {
 		// this._display.icon.set('class', 'glyphicon glyphicon-refresh');
@@ -596,7 +596,7 @@ gx.zeyos.SelectFilter = new Class({
 	/**
 	 * @method hideLoader
 	 * @description Hide the loader icon and restore the default icon
-	 * @return gx.zeyos.SelectDyn
+	 * @return gx.zeyos.SelectFilter
 	 */
 	hideLoader: function() {
 		// this._display.icon.set('class', 'glyphicon glyphicon-'+this.options.icon);

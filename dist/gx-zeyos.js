@@ -1639,61 +1639,63 @@ gx.zeyos.Panel = new Class({
  * @sample Datebox Simple datebox example.
  */
 gx.zeyos.Permission = new Class({
-	gx: 'gx.zeyos.Datebox',
+	gx: 'gx.zeyos.Permission',
 	Extends: gx.ui.Container,
 	options: {
 		'value': 0,
 		'groups': []
 	},
 	_fields: {},
+	_labels: {},
+	_shared: false,
 	initialize: function(display, options) {
 		var root = this;
-		try {
-			this.parent(display, options);
+		this.parent(display, options);
 
-			var label,
-			    labelFields = {
-				'owner'  : ['Owner', 'field.owner'],
-				'public' : ['Public', 'field.public'],
-				'private': ['Private', 'field.private']
-			};
+		var labelFields = {
+			'owner'  : ['Owner', 'field.owner'],
+			'public' : ['Public', 'field.public'],
+			'shared' : ['Shared', 'field.shared'],
+			'private': ['Private', 'field.private']
+		};
 
-			if (typeof _ = 'function') {
-				Object.each(labelFields, function(f, key) {
-					label[key] = _(f[1]);
-				});
-			} else {
-				Object.each(labelFields, function(f, key) {
-					label[key] = f[0];
-				});
-			}
-				label = _('field.owner');
-
-			this._display.select = new gx.zeyos.SelectFilter(null, {
-				data: this.options.groups,
-				allowEmpty: true,
-				msg: {'noSelection': labelPublic}
-			});
-			this._display.select.disable();
-
-			this._display.checkbox = new Element('input', {'type': 'checkbox', 'class': 'm_r-6X'});
-			this._display.indicator = new Element('span', {'class': 'fc-B6 fn m_l-10X'});
-			this._display.root.adopt(__({'tag': 'label', 'children': [
-				this._display.checkbox,
-				label,
-				this._display.indicator
-			]}));
-
-			this._display.checkbox.addEvent('click', function(event) {
-				event.preventDefault();
-				if (this._display.checkbox.checked) {
-					this._display.select.enable();
-				} else {
-					this.set(false);
-				}
+		if (typeof _ === 'function') {
+			Object.each(labelFields, function(f, key) {
+				this._labels[key] = _(f[1]);
 			}.bind(this));
+		} else {
+			Object.each(labelFields, function(f, key) {
+				this._labels[key] = f[0];
+			}.bind(this));
+		}
 
-		} catch(e) { gx.util.Console('gx.zeyos.Datebox->initialize', e.message); }
+		this._display.select = new gx.zeyos.SelectFilter(null, {
+			data: this.options.groups,
+			allowEmpty: true
+		});
+
+		this._display.checkbox = new Element('input', {'type': 'checkbox', 'class': 'm_r-6X'});
+		this._display.indicator = new Element('span', {'class': 'fc-B6 fn m_l-10X'});
+		this._display.root.adopt([
+			__({'tag': 'p', 'child':
+				{'tag': 'label', 'children': [
+					this._display.checkbox,
+					this._labels.owner,
+					this._display.indicator
+				]}
+			}),
+			this._display.select
+		]);
+
+		this._display.checkbox.addEvent('click', function(event) {
+			if (!this._display.checkbox.checked) {
+				this.set(false);
+			} else {
+				this.set(true);
+			}
+		}.bind(this));
+
+		this.set(false);
 	},
 
 	/**
@@ -1704,14 +1706,20 @@ gx.zeyos.Permission = new Class({
 	set: function(permission) {
 		if (permission === false) {
 			// Private
+			this._display.select._display.textbox.set('placeholder', '(' + this._labels.private + ')');
+			this._display.indicator.set('html', '(' + this._labels.private + ')');
 			this._display.select.disable();
 			this._display.checkbox.checked = false;
+			this._shared = false;
 		} else {
+			this._display.select._display.textbox.set('placeholder', '(' + this._labels.public + ')');
+			this._display.indicator.set('html', '(' + this._labels.shared + ')');
 			this._display.checkbox.checked = true;
 			this._display.select.enable();
 			this._display.select.reset();
+			this._shared = true;
 			if (permission !== true) {
-				this._display.select.setId(permission)
+				this._display.select.setId(permission);
 			}
 		}
 	},
@@ -1722,7 +1730,12 @@ gx.zeyos.Permission = new Class({
 	 * @return
 	 */
 	get: function() {
+		if (this._shared) {
+			var group = this._display.select.getId();
+			return group == null ? true : group;
+		}
 
+		return false;
 	}
 });
 ;/**
@@ -2636,7 +2649,7 @@ gx.zeyos.SelectFilter = new Class({
 	/**
 	 * @method showLoader
 	 * @description Show the loader icon
-	 * @return gx.zeyos.SelectDyn
+	 * @return gx.zeyos.SelectFilter
 	 */
 	showLoader: function() {
 		// this._display.icon.set('class', 'glyphicon glyphicon-refresh');
@@ -2646,7 +2659,7 @@ gx.zeyos.SelectFilter = new Class({
 	/**
 	 * @method hideLoader
 	 * @description Hide the loader icon and restore the default icon
-	 * @return gx.zeyos.SelectDyn
+	 * @return gx.zeyos.SelectFilter
 	 */
 	hideLoader: function() {
 		// this._display.icon.set('class', 'glyphicon glyphicon-'+this.options.icon);

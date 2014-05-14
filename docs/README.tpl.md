@@ -41,6 +41,11 @@ Creates a dynamic select box, which dynamically loads the contents from a remote
 @@include('demos/Groupbox.demo.js')
 ```
 
+### gx.zeyos.Permission ###
+
+```js
+@@include('demos/Permission.demo.js')
+```
 
 Usage
 -----
