@@ -4,6 +4,12 @@ Gx ZeyOS Components
 Gx is an extensible component library built on MooTools. The ZeyOS module includes various components for building add-on for ZeyOS.
 
 
+Demos
+-----
+
+All demos from the `./docs/demos/` directory and be viewed on our [Demo page](http://gx.zeyon.net/zeyos/)
+
+
 Components
 ----------
 
