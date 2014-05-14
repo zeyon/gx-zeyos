@@ -213,6 +213,23 @@ gx.zeyos.Select = new Class({
 	},
 
 	/**
+	 * Updates the selection by ID
+	 * @param {string|int} id
+	 */
+	setId: function(id) {
+		var data,
+		    list = this.getRows();
+		for (var i = 0 ; i < list.length ; i++) {
+			data = list[i].retrieve('data');
+			if ( this.getId(data) == id ) {
+				this.set(data);
+				return;
+			}
+		}
+		this.options.getId(list[i])
+	},
+
+	/**
 	 * @method update
 	 * @description Updates the select box according to its state of selection
 	 * @param {bool} noEvents Do not throw events
@@ -261,6 +278,15 @@ gx.zeyos.Select = new Class({
 	},
 
 	/**
+	 * @method getRows
+	 * @description Returns the list rows
+	 * @return {array}
+	 */
+	getRows: function() {
+		return this._display.dropdown.getElements('>div');
+	},
+
+	/**
 	 * @method setData
 	 * @description Builds a list of links from the provided array
 	 * @param {array} list The provided array
@@ -297,7 +323,7 @@ gx.zeyos.Select = new Class({
 					continue;
 
 				var row = this.getLink(list[i]);
-				if ( this._selected != null && this.options.getId(list[i]) == this.options.getId(this._selected))
+				if ( this._selected != null && this.options.getId(list[i]) == this.options.getId(this._selected) )
 					row.addClass('act');
 
 				row.store('data', list[i]);
@@ -529,9 +555,12 @@ gx.zeyos.SelectFilter = new Class({
 	 */
 	_searchQuery: function (query) {
 		try {
-			this._display.dropdown.getElements('li').each(function(li) {
-				var data = li.retrieve('data', {});
-				this.options.searchfields.each(function(field) {
+			this._display.dropdown.getElements('>div').each(function(li) {
+				var field,
+				    data = li.retrieve('data', {});
+
+				for (var i = 0 ; i < this.options.searchfields.length ; i++) {
+					field = this.options.searchfields[i];
 					if (query == '') {
 						li.removeClass('hidden');
 						return;
@@ -545,8 +574,8 @@ gx.zeyos.SelectFilter = new Class({
 								return;
 							}
 					}
-					li.addClass('hidden');
-				}.bind(this));
+				}
+				li.addClass('hidden');
 			}.bind(this));
 		} catch(e) {
 			e.message = 'gx.zeyos.SelectFilter: ' + e.message;

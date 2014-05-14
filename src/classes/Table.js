@@ -1,6 +1,6 @@
 /**
  * @class gx.zeyos.Table
- * @description Creates a dynamic select box, which dynamically loads the contents from a remote URL.
+ * @description Renders a dynamic table
  * @extends gx.ui.Container
  * @implements gx.util.Console
  * @sample Table
@@ -146,15 +146,7 @@ gx.zeyos.Table = new Class({
 			if (this.options.selectable) {
 				this._display.checkall = new Element('input', {'type': 'checkbox'});
 				this._display.checkall.addEvent('click', function() {
-					var deselect = true;
-					this._rows.each(function(row, index) {
-						if (!row.checkbox.checked)
-							deselect = false;
-					});
-					this._rows.each(function(row) {
-						row.checkbox.checked = !deselect;
-					});
-					checkall.checked = !deselect;
+					this.toggleSelect();
 				}.bind(this));
 				this.options.cols = [{
 					'label'     : this._display.checkall,
@@ -243,7 +235,11 @@ gx.zeyos.Table = new Class({
 
 				// Add checkboxes
 				if (this.options.selectable) {
-					row.checkbox = new Element('input', {'type': 'checkbox', 'value': row.ID});
+					row.checkbox = new Element('input', {
+						'type'   : 'checkbox',
+						'value'  : row.ID,
+						'checked': row.checked
+					});
 					cols = [{
 						'label': row.checkbox,
 						'className': 'tbl_chk'
@@ -266,7 +262,7 @@ gx.zeyos.Table = new Class({
 					var td = new Element('td');
 
 					if ( this.options.cols[index].width != null )
-						td.setStyle('width', this.options.cols[index].width);
+						td.setStyle('max-width', this.options.cols[index].width);
 
 					switch ( typeOf(col) ) {
 						case 'object' :
@@ -413,5 +409,30 @@ gx.zeyos.Table = new Class({
 		}.bind(this))
 
 		return selection;
+	},
+
+	toggleSelect: function() {
+		if (!this.options.selectable)
+			return;
+
+		var deselect = true;
+		this._rows.each(function(row, index) {
+			if (!row.checkbox.checked)
+				deselect = false;
+		});
+		this._rows.each(function(row) {
+			row.checkbox.checked = !deselect;
+		});
+		this._display.checkall.checked = !deselect;
+	},
+
+	checkall: function(value) {
+		if (value !== false)
+			value = true;
+
+		this._rows.each(function(row) {
+			row.checkbox.checked = value;
+		});
+		this._display.checkall.checked = value;
 	}
 });

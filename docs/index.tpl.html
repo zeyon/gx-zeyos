@@ -4,6 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="charset" content="utf-8" />
 	<title>gx-zeyos</title>
+	<link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon"></link>
+	<link rel="icon" href="./assets/favicon.ico" type="image/x-icon"></link>
 
 	<!-- MooTools -->
 	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-core-1.4.5-yc.js"></script>
@@ -14,8 +16,7 @@
 
 	<!-- Site-specific scripts & styles -->
 	<link rel="stylesheet" type="text/css" href="../dist/gx-zeyos.css" />
-	<link rel="stylesheet" type="text/css" href="demo.css" />
-
+	<link rel="stylesheet" type="text/css" href="./assets/demo.css" />
 
 	<!-- include: "type": "js", "files": ["src/*.js", "src/classes/*.js"] -->
 	<script>
@@ -34,7 +35,7 @@
 
 			/* gx.zeyos.Datebox
 			-------------------------------------- */
-			//@include('demos/Datebox.demo.js')
+			// @include('demos/Datebox.demo.js')
 
 			/* gx.zeyos.Dropdown
 			-------------------------------------- */
@@ -42,7 +43,7 @@
 
 			/* gx.zeyos.Groupbox
 			-------------------------------------- */
-			//@include('demos/Groupbox.demo.js')
+			@@include('demos/Groupbox.demo.js')
 
 			/* gx.zeyos.Msgbox
 			-------------------------------------- */
@@ -52,11 +53,9 @@
 			-------------------------------------- */
 			//@include('demos/Popup.demo.js')
 
-
-
 			/* gx.zeyos.Tabbox
 			-------------------------------------- */
-			//@include('demos/Tabbox.demo.js')
+			@@include('demos/Tabbox.demo.js')
 		});
 	</script>
 
@@ -74,6 +73,10 @@
 </head>
 
 <body id="body">
+
+<div>ZeyOS Components Demo Page</div>
+<section id="footer">Copyright &copy; 2014 by <a href="http://www.zeyos.com/">Zeyon Technologies Inc.</a></section>
+<a href="https://github.com/zeyon/gx-zeyos"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 
 @@include('icons.html')
 </body>

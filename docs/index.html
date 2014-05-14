@@ -4,6 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="charset" content="utf-8" />
 	<title>gx-zeyos</title>
+	<link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon"></link>
+	<link rel="icon" href="./assets/favicon.ico" type="image/x-icon"></link>
 
 	<!-- MooTools -->
 	<script language="JavaScript" type="text/javascript" src="../../mootools/mootools-core-1.4.5-yc.js"></script>
@@ -14,14 +16,14 @@
 
 	<!-- Site-specific scripts & styles -->
 	<link rel="stylesheet" type="text/css" href="../dist/gx-zeyos.css" />
-	<link rel="stylesheet" type="text/css" href="demo.css" />
-
+	<link rel="stylesheet" type="text/css" href="./assets/demo.css" />
 
 	<script src="../src/gx.zeyos.js"></script>
 <script src="../src/classes/Checklist.js"></script>
 <script src="../src/classes/Client.js"></script>
 <script src="../src/classes/DatePicker.js"></script>
 <script src="../src/classes/Datebox.js"></script>
+<script src="../src/classes/Dialog.js"></script>
 <script src="../src/classes/Dropdown.js"></script>
 <script src="../src/classes/Factory.js"></script>
 <script src="../src/classes/Groupbox.js"></script>
@@ -29,6 +31,7 @@
 <script src="../src/classes/MonthPicker.js"></script>
 <script src="../src/classes/Msgbox.js"></script>
 <script src="../src/classes/Panel.js"></script>
+<script src="../src/classes/Permission.js"></script>
 <script src="../src/classes/Popup.js"></script>
 <script src="../src/classes/Request.js"></script>
 <script src="../src/classes/Search.js"></script>
@@ -43,29 +46,6 @@
 			/* gx.zeyos.Select
 			-------------------------------------- */
 			(function () {
-	/*
-	var zSelect = new gx.zeyos.SelectDyn(null, {
-		'url': window.location.href.substring(0, window.location.href.lastIndexOf("/")+1) + 'data/select.json',
-		'width': '300px'
-	});
-
-	// Demo Injection
-	$(document.body).adopt(__({'children': [
-		{'tag': 'h5', 'html': 'gx.zeyos.Select'},
-		{'class': 'p-10 b_t-1 b_b-1', 'children': [
-			{'tag': 'label', 'html': 'Selection demo:'},
-			zSelect
-		]},
-		{'class': 'p-10 bg-E', 'children': {
-			btnSelectValue : {'tag': 'button', 'html': 'Get selection', 'onClick': function() {
-				alert(JSON.encode(zSelect.getSelected()));
-			}},
-			btnSelectReset : {'tag': 'button', 'html': 'Reset', 'onClick': function() {
-				zSelect.set();
-			}}
-		}}
-	]}));
-*/
 	var SelectPrio = new gx.zeyos.SelectPrio();
 
 	var SelectFilter = new gx.zeyos.SelectFilter();
@@ -186,7 +166,7 @@
 
 			/* gx.zeyos.Datebox
 			-------------------------------------- */
-			//@include('demos/Datebox.demo.js')
+			// @include('demos/Datebox.demo.js')
 
 			/* gx.zeyos.Dropdown
 			-------------------------------------- */
@@ -194,7 +174,37 @@
 
 			/* gx.zeyos.Groupbox
 			-------------------------------------- */
-			//@include('demos/Groupbox.demo.js')
+			(function () {
+	var Groupboxes = [
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'First Groupbox', 'open': true}),
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'Second Groupbox'}),
+		new gx.zeyos.Groupbox(__({'html': 'Hello world'}), {'title': 'Third'})
+	];
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Groupbox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'children': Groupboxes},
+		{'class': 'p-10 bg-E', 'children': {
+			btnToggle : {'tag': 'button', 'class': 'm_r-5', 'html': 'Toggle all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.toggle();
+				});
+			}},
+			btnOpen : {'tag': 'button', 'class': 'm_r-5', 'html': 'Open all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.open();
+				});
+			}},
+			btnClose : {'tag': 'button', 'html': 'Close all', 'onClick': function() {
+				Groupboxes.each(function(gb) {
+					gb.close();
+				});
+			}}
+		}}
+	]}));
+})();
+
 
 			/* gx.zeyos.Msgbox
 			-------------------------------------- */
@@ -204,11 +214,32 @@
 			-------------------------------------- */
 			//@include('demos/Popup.demo.js')
 
-
-
 			/* gx.zeyos.Tabbox
 			-------------------------------------- */
-			//@include('demos/Tabbox.demo.js')
+			(function () {
+	var Tabbox = new gx.zeyos.Tabbox(null, {
+		'height': 150,
+		'frames': [
+			{'name': 'tab1', 'title': 'First Tab', 'content':
+				__('Nulla facilisi. Nunc volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut sit amet orci vel mauris blandit vehicula.')
+			},
+			{'name': 'tab2', 'title': 'Second Tab', 'content':
+				__('Donec semper, sem nec tristique tempus, justo neque commodo nisl, ut gravida sem tellus suscipit nunc. Aliquam erat volutpat. Ut tincidunt pretium elit. Aliquam pulvinar.')
+			},
+			{'name': 'tab3', 'title': 'Third Tab', 'content':
+				__('Donec dapibus orci sit amet elit. Maecenas rutrum ultrices lectus. Aliquam suscipit, lacus a iaculis adipiscing, eros orci pellentesque nisl, non pharetra dolor urna nec dolor.')
+			}
+		]
+	});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Tabbox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Tabbox}
+	]}));
+})();
+
+
 		});
 	</script>
 
@@ -227,14 +258,20 @@
 
 <body id="body">
 
+<div>ZeyOS Components Demo Page</div>
+<section id="footer">Copyright &copy; 2014 by <a href="http://www.zeyos.com/">Zeyon Technologies Inc.</a></section>
+<a href="https://github.com/zeyon/gx-zeyos"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+
 <div>
 	<h5>Icons</h5>
     <div id="icons">
+      <!--
       <div class="switch">
        <label>
         <input type="checkbox" onclick="toggleCodes(this.checked)">show codes
        </label>
       </div>
+      -->
       <div style="clear:both"></div>
       <div class="row">
         <div title="Code: 0xe800" class="the-icons"><i class="icon-search"></i> <span class="i-name">icon-search</span><span class="i-code">0xe800</span></div>
