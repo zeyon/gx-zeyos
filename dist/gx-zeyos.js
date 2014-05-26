@@ -789,6 +789,16 @@ gx.zeyos.Dialog = new Class({
 	},
 
 	/**
+	 * @method getFrame
+	 * @description Returns a specific frame
+	 * @param {string} key The frame ID
+	 * @return {object}
+	 */
+	getFrame: function(key) {
+		return this._frames[key];
+	},
+
+	/**
 	 * @method addFrame
 	 * @description Adds a dialog frame
 	 * @param {string} key The frame ID
@@ -811,7 +821,7 @@ gx.zeyos.Dialog = new Class({
 	 * @method addSubmitFrame
 	 * @description Add the success frame
 	 * @param {string} key The frame ID
-	 * @param {element} content The form content
+	 * @param {element} content The frame content
 	 * @param {function} onSubmit Submit action
 	 * @param {bool} open Open the frame (if this is the first frame, it will be opened by default)
 	 * @return {object} The content object
@@ -830,6 +840,35 @@ gx.zeyos.Dialog = new Class({
 			}
 		}, open);
 		return content;
+	},
+
+	/**
+	 * @method addFormFrame
+	 * @description Add a form frame frame
+	 * @param {string} key The frame ID
+	 * @param {element} form The form content {key: [label, elem], ...}
+	 * @param {function} onSubmit Submit action
+	 * @param {bool} open Open the frame (if this is the first frame, it will be opened by default)
+	 * @return {object} The form object {key: elem, ...}
+	 */
+	addFormFrame: function(key, form, onSubmit, open) {
+		var frm = {},
+		    content = [],
+		    m = '';
+
+		Object.each(form, function(elem, key) {
+			// Add the label
+			content.push({'tag': 'p', 'html': elem[0] == null ? '' :elem[0], 'class': m});
+			m = 'm_t-1M'; // Margin for following elements
+
+			// Add the field
+			content.push(elem[1]);
+			frm[key] = elem[1];
+		});
+
+		this.addSubmitFrame(key, content, onSubmit, open);
+
+		return frm;
 	},
 
 	/**
@@ -859,6 +898,38 @@ gx.zeyos.Dialog = new Class({
 				}}
 			}})
 		}, open);
+	},
+
+	/**
+	 * @method getFormValues
+	 * @description Returns the values of a form object
+	 * @param {object} form
+	 * @return {object}
+	 */
+	getFormValues: function(form) {
+		var res = {};
+
+		Object.each(form, function(field, key) {
+			switch (typeOf(field)) {
+				case 'element':
+					res[key] = field.get('value');
+					break;
+				case 'object':
+					if (instanceOf(field, gx.ui.Container)) {
+						if (typeOf(form.getValue) == 'function')
+							res[key] = field.getValue();
+						else if (typeOf(field.getValues) == 'function')
+							res[key] = field.getValues();
+						else if (typeOf(field.getId) == 'function')
+							res[key] = field.getId();
+						else if (typeOf(field.get) == 'function')
+							res[key] = field.get();
+					}
+					break;
+			}
+		});
+
+		return res;
 	}
 });
 ;/**
@@ -1642,7 +1713,7 @@ gx.zeyos.Permission = new Class({
 	gx: 'gx.zeyos.Permission',
 	Extends: gx.ui.Container,
 	options: {
-		'value': 0,
+		'value': true,
 		'groups': []
 	},
 	_fields: {},
@@ -1695,7 +1766,7 @@ gx.zeyos.Permission = new Class({
 			}
 		}.bind(this));
 
-		this.set(false);
+		this.set(this.options.value);
 	},
 
 	/**
@@ -1704,7 +1775,7 @@ gx.zeyos.Permission = new Class({
 	 * @param {false|true|int} permission Sets the permission (FALSE: private, TRUE: public, INT: Group ID)
 	 */
 	set: function(permission) {
-		if (permission === false) {
+		if (permission === false || permission === 'private') {
 			// Private
 			this._display.select._display.textbox.set('placeholder', '(' + this._labels.private + ')');
 			this._display.indicator.set('html', '(' + this._labels.private + ')');
@@ -1719,7 +1790,7 @@ gx.zeyos.Permission = new Class({
 			this._display.select.enable();
 			this._display.select.reset();
 			this._shared = true;
-			if (permission !== true) {
+			if (permission !== true && permission !== 'public') {
 				this._display.select.setId(permission);
 			}
 		}
@@ -1733,10 +1804,10 @@ gx.zeyos.Permission = new Class({
 	get: function() {
 		if (this._shared) {
 			var group = this._display.select.getId();
-			return group == null ? true : group;
+			return group == null ? 'public' : group;
 		}
 
-		return false;
+		return 'private';
 	}
 });
 ;/**
@@ -1910,6 +1981,10 @@ gx.zeyos.Request = new Class({
 	},
 	initialize: function (options) {
 		this.parent(options);
+
+		if (typeOf(options.showError) == 'function') {
+			this.showError = options.showError;
+		}
 	},
 	/**
 	 * @method setService
@@ -1941,14 +2016,14 @@ gx.zeyos.Request = new Class({
 				this.fireEvent('complete');
 			}.bind(this),
 			'onFailure': function(xhr) {
-				if (xhr.responseType == 'text') {
+				if (xhr.responseText != '') {
 					var json = xhr.responseText;
 					res = JSON.decode(json);
 					if (typeOf(res) == 'object') {
 						if (res.error != null)
-							ZeyOSApi.showMsgRuntimeError('Error: '+res.error);
+							this.showError('Error: '+res.error);
 						else
-							ZeyOSApi.showMsgRuntimeError('Invalid response (no result): '+json);
+							this.showError('Server error (' + xhr.status + ') ' + json);
 					}
 					this.fireEvent('failure', json);
 				}
@@ -1959,19 +2034,30 @@ gx.zeyos.Request = new Class({
 				res = JSON.decode(json);
 				if (typeOf(res) == 'object') {
 					if (res.error != null) {
-						ZeyOSApi.showMsgRuntimeError('Error: '+res.error);
+						console.log('gx.zeyos.Request: ', res.error);
+						this.showError('Error: '+res.error);
 						this.fireEvent('failure', json);
 					} else if (res.result == null) {
-						ZeyOSApi.showMsgRuntimeError('Invalid response (no result): '+json);
+						console.log('gx.zeyos.Request: Invalid response (no result) - ', json);
+						this.showError('Invalid response (no result): '+json);
 						this.fireEvent('failure', json);
 					} else
 						callback(res.result);
 				} else {
-					ZeyOSApi.showMsgRuntimeError('Invalid response: '+json);
+					this.showError('Invalid response: '+json);
 				}
 			}.bind(this)
 		});
 		req.send();
+	},
+	/**
+	 * @method showError
+	 * @description Displays an error message
+	 * @param {string} err
+	 */
+	showError: function(err) {
+		// ZeyOSApi.showMsgRuntimeError(err);
+		alert(err);
 	},
 	/**
 	 * @method post
@@ -2290,7 +2376,6 @@ gx.zeyos.Select = new Class({
 				return;
 			}
 		}
-		this.options.getId(list[i])
 	},
 
 	/**
@@ -2387,7 +2472,7 @@ gx.zeyos.Select = new Class({
 					continue;
 
 				var row = this.getLink(list[i]);
-				if ( this._selected != null && this.options.getId(list[i]) == this.options.getId(this._selected) )
+				if ( this._selected != null && this.getId(list[i]) == this.getId(this._selected) )
 					row.addClass('act');
 
 				row.store('data', list[i]);
@@ -2396,7 +2481,8 @@ gx.zeyos.Select = new Class({
 				addCLink(row, list[i]);
 			}
 		} catch(e) {
-			gx.util.Console('gx.zeyos.Select->setData', e.message);
+			e.message = 'gx.zeyos.Select: ' + e.message;
+			throw e;
 		}
 
 		return this;
@@ -2524,24 +2610,44 @@ gx.zeyos.SelectPrio = new Class({
 			{'value': 3, 'color': '#ff4000', 'symbol': '■■■■□', 'label': 'high'},
 			{'value': 4, 'color': '#c00000', 'symbol': '■■■■■', 'label': 'highest'}
 		],
-		msg: {
-			'lowest' : 'Lowest',
-			'low'    : 'Low',
-			'medium' : 'Medium',
-			'high'   : 'High',
-			'highest': 'Highest'
-		},
 		value: 0
+	},
+	_labels: {},
+	initialize: function (display, options) {
+		var root = this;
+		try {
+			var labelFields = {
+				'lowest' : ['Lowest', 'priority.lowest'],
+				'low'    : ['Low', 'priority.low'],
+				'medium' : ['Medium', 'priority.medium'],
+				'high'   : ['High', 'priority.high'],
+				'highest': ['Highest', 'priority.highest']
+			};
+			if (typeof _ === 'function') {
+				Object.each(labelFields, function(f, key) {
+					this._labels[key] = _(f[1]);
+				}.bind(this));
+			} else {
+				Object.each(labelFields, function(f, key) {
+					this._labels[key] = f[0];
+				}.bind(this));
+			}
+
+			this.parent(display, options);
+		} catch(e) {
+			e.message = 'gx.zeyos.Select: ' + e.message;
+			throw e;
+		}
 	},
 
 	showSelection: function() {
-		this._display.textbox.set('value', this._selected == null ? '' : this._selected.symbol + ' | ' + this.getMessage(this._selected.label));
+		this._display.textbox.set('value', this._selected == null ? '' : this._selected.symbol + ' | ' + this._labels[this._selected.label]);
 	},
 
 	getLink: function(elem) {
 		return new Element('div', {
 			'class' : 'sel_item',
-			'html'  : elem.symbol + ' | ' + this.getMessage(elem.label),
+			'html'  : elem.symbol + ' | ' + this._labels[elem.label],
 			'styles': {'color': elem.color}
 		});
 	}

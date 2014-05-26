@@ -226,7 +226,6 @@ gx.zeyos.Select = new Class({
 				return;
 			}
 		}
-		this.options.getId(list[i])
 	},
 
 	/**
@@ -323,7 +322,7 @@ gx.zeyos.Select = new Class({
 					continue;
 
 				var row = this.getLink(list[i]);
-				if ( this._selected != null && this.options.getId(list[i]) == this.options.getId(this._selected) )
+				if ( this._selected != null && this.getId(list[i]) == this.getId(this._selected) )
 					row.addClass('act');
 
 				row.store('data', list[i]);
@@ -332,7 +331,8 @@ gx.zeyos.Select = new Class({
 				addCLink(row, list[i]);
 			}
 		} catch(e) {
-			gx.util.Console('gx.zeyos.Select->setData', e.message);
+			e.message = 'gx.zeyos.Select: ' + e.message;
+			throw e;
 		}
 
 		return this;
@@ -460,24 +460,44 @@ gx.zeyos.SelectPrio = new Class({
 			{'value': 3, 'color': '#ff4000', 'symbol': '■■■■□', 'label': 'high'},
 			{'value': 4, 'color': '#c00000', 'symbol': '■■■■■', 'label': 'highest'}
 		],
-		msg: {
-			'lowest' : 'Lowest',
-			'low'    : 'Low',
-			'medium' : 'Medium',
-			'high'   : 'High',
-			'highest': 'Highest'
-		},
 		value: 0
+	},
+	_labels: {},
+	initialize: function (display, options) {
+		var root = this;
+		try {
+			var labelFields = {
+				'lowest' : ['Lowest', 'priority.lowest'],
+				'low'    : ['Low', 'priority.low'],
+				'medium' : ['Medium', 'priority.medium'],
+				'high'   : ['High', 'priority.high'],
+				'highest': ['Highest', 'priority.highest']
+			};
+			if (typeof _ === 'function') {
+				Object.each(labelFields, function(f, key) {
+					this._labels[key] = _(f[1]);
+				}.bind(this));
+			} else {
+				Object.each(labelFields, function(f, key) {
+					this._labels[key] = f[0];
+				}.bind(this));
+			}
+
+			this.parent(display, options);
+		} catch(e) {
+			e.message = 'gx.zeyos.Select: ' + e.message;
+			throw e;
+		}
 	},
 
 	showSelection: function() {
-		this._display.textbox.set('value', this._selected == null ? '' : this._selected.symbol + ' | ' + this.getMessage(this._selected.label));
+		this._display.textbox.set('value', this._selected == null ? '' : this._selected.symbol + ' | ' + this._labels[this._selected.label]);
 	},
 
 	getLink: function(elem) {
 		return new Element('div', {
 			'class' : 'sel_item',
-			'html'  : elem.symbol + ' | ' + this.getMessage(elem.label),
+			'html'  : elem.symbol + ' | ' + this._labels[elem.label],
 			'styles': {'color': elem.color}
 		});
 	}

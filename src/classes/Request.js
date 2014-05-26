@@ -16,6 +16,10 @@ gx.zeyos.Request = new Class({
 	},
 	initialize: function (options) {
 		this.parent(options);
+
+		if (typeOf(options.showError) == 'function') {
+			this.showError = options.showError;
+		}
 	},
 	/**
 	 * @method setService
@@ -47,14 +51,14 @@ gx.zeyos.Request = new Class({
 				this.fireEvent('complete');
 			}.bind(this),
 			'onFailure': function(xhr) {
-				if (xhr.responseType == 'text') {
+				if (xhr.responseText != '') {
 					var json = xhr.responseText;
 					res = JSON.decode(json);
 					if (typeOf(res) == 'object') {
 						if (res.error != null)
-							ZeyOSApi.showMsgRuntimeError('Error: '+res.error);
+							this.showError('Error: '+res.error);
 						else
-							ZeyOSApi.showMsgRuntimeError('Invalid response (no result): '+json);
+							this.showError('Server error (' + xhr.status + ') ' + json);
 					}
 					this.fireEvent('failure', json);
 				}
@@ -65,19 +69,30 @@ gx.zeyos.Request = new Class({
 				res = JSON.decode(json);
 				if (typeOf(res) == 'object') {
 					if (res.error != null) {
-						ZeyOSApi.showMsgRuntimeError('Error: '+res.error);
+						console.log('gx.zeyos.Request: ', res.error);
+						this.showError('Error: '+res.error);
 						this.fireEvent('failure', json);
 					} else if (res.result == null) {
-						ZeyOSApi.showMsgRuntimeError('Invalid response (no result): '+json);
+						console.log('gx.zeyos.Request: Invalid response (no result) - ', json);
+						this.showError('Invalid response (no result): '+json);
 						this.fireEvent('failure', json);
 					} else
 						callback(res.result);
 				} else {
-					ZeyOSApi.showMsgRuntimeError('Invalid response: '+json);
+					this.showError('Invalid response: '+json);
 				}
 			}.bind(this)
 		});
 		req.send();
+	},
+	/**
+	 * @method showError
+	 * @description Displays an error message
+	 * @param {string} err
+	 */
+	showError: function(err) {
+		// ZeyOSApi.showMsgRuntimeError(err);
+		alert(err);
 	},
 	/**
 	 * @method post

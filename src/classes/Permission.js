@@ -19,7 +19,7 @@ gx.zeyos.Permission = new Class({
 	gx: 'gx.zeyos.Permission',
 	Extends: gx.ui.Container,
 	options: {
-		'value': 0,
+		'value': true,
 		'groups': []
 	},
 	_fields: {},
@@ -72,7 +72,7 @@ gx.zeyos.Permission = new Class({
 			}
 		}.bind(this));
 
-		this.set(false);
+		this.set(this.options.value);
 	},
 
 	/**
@@ -81,7 +81,7 @@ gx.zeyos.Permission = new Class({
 	 * @param {false|true|int} permission Sets the permission (FALSE: private, TRUE: public, INT: Group ID)
 	 */
 	set: function(permission) {
-		if (permission === false) {
+		if (permission === false || permission === 'private') {
 			// Private
 			this._display.select._display.textbox.set('placeholder', '(' + this._labels.private + ')');
 			this._display.indicator.set('html', '(' + this._labels.private + ')');
@@ -96,7 +96,7 @@ gx.zeyos.Permission = new Class({
 			this._display.select.enable();
 			this._display.select.reset();
 			this._shared = true;
-			if (permission !== true) {
+			if (permission !== true && permission !== 'public') {
 				this._display.select.setId(permission);
 			}
 		}
@@ -110,9 +110,9 @@ gx.zeyos.Permission = new Class({
 	get: function() {
 		if (this._shared) {
 			var group = this._display.select.getId();
-			return group == null ? true : group;
+			return group == null ? 'public' : group;
 		}
 
-		return false;
+		return 'private';
 	}
 });
