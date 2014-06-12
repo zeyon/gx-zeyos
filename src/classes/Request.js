@@ -14,6 +14,7 @@ gx.zeyos.Request = new Class({
 		'service': false,
 		'accesskey': false
 	},
+	_files: [],
 	initialize: function (options) {
 		this.parent(options);
 
@@ -21,6 +22,7 @@ gx.zeyos.Request = new Class({
 			this.showError = options.showError;
 		}
 	},
+
 	/**
 	 * @method setService
 	 * @description Sets the ZeyOS REST service
@@ -31,6 +33,7 @@ gx.zeyos.Request = new Class({
 		this.options.service = service;
 		this.options.accesskey = accesskey == null ? accesskey : false;
 	},
+
 	/**
 	 * @method send
 	 * @description Performs a HTTP request
@@ -40,7 +43,7 @@ gx.zeyos.Request = new Class({
 	 * @param {string} method
 	 */
 	send: function(path, data, callback, method) {
-		var req = new Request({
+		var reqOptions = {
 			'url': '../remotecall/'+this.options.service+(this.options.accesskey ? ':'+this.options.accesskey : '')+'/'+path,
 			'method': method,
 			'data': data,
@@ -82,8 +85,18 @@ gx.zeyos.Request = new Class({
 					this.showError('Invalid response: '+json);
 				}
 			}.bind(this)
-		});
+		};
+		var req;
+		if (this._files[0] != null) {
+			req = new Request.File(reqOptions);
+			this._files.each(function(elem) {
+				req.addFile(elem);
+			});
+		} else {
+			req = new Request(reqOptions);
+		}
 		req.send();
+		this._files = [];
 	},
 	/**
 	 * @method showError
@@ -93,6 +106,18 @@ gx.zeyos.Request = new Class({
 	showError: function(err) {
 		// ZeyOSApi.showMsgRuntimeError(err);
 		alert(err);
+	},
+	/**
+	 * @method upload
+	 * @description Performs a POST request with file upload
+	 * @param {string} path The REST path (e.g. "list/") - please mind the exact name of your resource (e.g. mind trailing slashes)
+	 * @param {object|string} data The request data
+	 * @param {array} files Array of file elements to upload
+	 * @param {function} callback The callback function
+	 */
+	upload: function(path, data, files, callback) {
+		this._files = files;
+		this.send(path, data, callback, 'POST');
 	},
 	/**
 	 * @method post
@@ -135,3 +160,5 @@ gx.zeyos.Request = new Class({
 		this.send(path, data, callback, 'PUT');
 	}
 });
+
+
