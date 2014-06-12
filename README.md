@@ -15,10 +15,6 @@ Components
 
 ### gx.zeyos.Select ###
 
-Creates a dynamic select box, which dynamically loads the contents from a remote URL
-
-#### Demo ####
-
 ```js
 (function () {
 	var SelectPrio = new gx.zeyos.SelectPrio();
@@ -200,10 +196,10 @@ Creates a dynamic select box, which dynamically loads the contents from a remote
 		{'class': 'p-10 b_t-1 b_b-1', 'child': Permission},
 		{'class': 'p-10 bg-E', 'children': {
 			btnPermissionSetPrivate : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set private', 'onClick': function() {
-				Permission.set(false);
+				Permission.set('private');
 			}},
 			btnPermissionSetPublic : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set public', 'onClick': function() {
-				Permission.set(true);
+				Permission.set('public');
 			}},
 			btnPermissionSetGroup : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set group', 'onClick': function() {
 				Permission.set(2);

@@ -15,10 +15,6 @@ Components
 
 ### gx.zeyos.Select ###
 
-Creates a dynamic select box, which dynamically loads the contents from a remote URL
-
-#### Demo ####
-
 ```js
 @@include('demos/Select.demo.js')
 ```
