@@ -236,11 +236,12 @@ gx.zeyos.Dialog = new Class({
 		Object.each(form, function(field, key) {
 			switch (typeOf(field)) {
 				case 'element':
-					res[key] = field.get('value');
+					if (field.get('value') != null)
+						res[key] = field.get('value');
 					break;
 				case 'object':
 					if (instanceOf(field, gx.ui.Container)) {
-						if (typeOf(form.getValue) == 'function')
+						if (typeOf(field.getValue) == 'function')
 							res[key] = field.getValue();
 						else if (typeOf(field.getValues) == 'function')
 							res[key] = field.getValues();
