@@ -43,10 +43,10 @@
 			}},
 			btnAddData : {'tag': 'button', 'class': 'm_r-5', 'html': 'Add data', 'onClick': function() {
 				var temp = Array.clone(data);
-				temp.push({'customername': 'Another One', 'customernum': '1003943295792836012345719837632809467', 'lastmodified': '1220454105'});
+				temp.push({'customername': 'Another One', 'customernum': '1008', 'lastmodified': '1220454105'});
 				Table.setData(temp);
 			}},
-			btnGetSelection : {'tag': 'button', 'html': 'Get selection', 'onClick': function() {
+			btnGetSelection : {'tag': 'button', 'html': 'Get selection (console)', 'onClick': function() {
 				console.log(Table.getSelection());
 			}}
 		}}

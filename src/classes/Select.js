@@ -271,7 +271,7 @@ gx.zeyos.Select = new Class({
 	 */
 	getLink: function(elem) {
 		return new Element('div', {
-			'class': 'sel_item ico',
+			'class': 'sel_item',
 			'html': elem[this.options.elementLabel]
 		});
 	},

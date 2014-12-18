@@ -21,6 +21,8 @@ gx.zeyos.Request = new Class({
 		if (typeOf(options.showError) == 'function') {
 			this.showError = options.showError;
 		}
+		
+		this.baseUrl = '../remotecall/'+this.options.service+(this.options.accesskey ? ':'+this.options.accesskey : '')+'/';
 	},
 
 	/**
@@ -44,7 +46,7 @@ gx.zeyos.Request = new Class({
 	 */
 	send: function(path, data, callback, method) {
 		var reqOptions = {
-			'url': '../remotecall/'+this.options.service+(this.options.accesskey ? ':'+this.options.accesskey : '')+'/'+path,
+			'url': this.baseUrl + path,
 			'method': method,
 			'data': data,
 			'onRequest': function() {
@@ -98,6 +100,7 @@ gx.zeyos.Request = new Class({
 		req.send();
 		this._files = [];
 	},
+	
 	/**
 	 * @method showError
 	 * @description Displays an error message
@@ -107,6 +110,16 @@ gx.zeyos.Request = new Class({
 		// ZeyOSApi.showMsgRuntimeError(err);
 		alert(err);
 	},
+	
+	/**
+	 * @method openLink
+	 * @description Opens a link in new window
+	 * @param {string} path The REST path (e.g. "list/") - please mind the exact name of your resource (e.g. mind trailing slashes)
+	 */
+	openLink: function(path) {
+		window.open(this.baseUrl + path, '_blank');
+	},
+	
 	/**
 	 * @method upload
 	 * @description Performs a POST request with file upload
@@ -119,6 +132,7 @@ gx.zeyos.Request = new Class({
 		this._files = files;
 		this.send(path, data, callback, 'POST');
 	},
+	
 	/**
 	 * @method post
 	 * @description Performs a POST request
@@ -129,6 +143,7 @@ gx.zeyos.Request = new Class({
 	'post': function(path, data, callback) {
 		this.send(path, data, callback, 'POST');
 	},
+	
 	/**
 	 * @method get
 	 * @description Performs a GET request
@@ -139,6 +154,7 @@ gx.zeyos.Request = new Class({
 	'get': function(path, data, callback) {
 		this.send(path, data, callback, 'GET');
 	},
+	
 	/**
 	 * @method put
 	 * @description Performs a PUT request
@@ -149,6 +165,7 @@ gx.zeyos.Request = new Class({
 	'put': function(path, data, callback) {
 		this.send(path, data, callback, 'PUT');
 	},
+	
 	/**
 	 * @method delete
 	 * @description Performs a DELETE request

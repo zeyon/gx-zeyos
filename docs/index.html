@@ -164,10 +164,10 @@
 			}},
 			btnAddData : {'tag': 'button', 'class': 'm_r-5', 'html': 'Add data', 'onClick': function() {
 				var temp = Array.clone(data);
-				temp.push({'customername': 'Another One', 'customernum': '1003943295792836012345719837632809467', 'lastmodified': '1220454105'});
+				temp.push({'customername': 'Another One', 'customernum': '1008', 'lastmodified': '1220454105'});
 				Table.setData(temp);
 			}},
-			btnGetSelection : {'tag': 'button', 'html': 'Get selection', 'onClick': function() {
+			btnGetSelection : {'tag': 'button', 'html': 'Get selection (console)', 'onClick': function() {
 				console.log(Table.getSelection());
 			}}
 		}}
@@ -201,7 +201,33 @@
 
 			/* gx.zeyos.Datebox
 			-------------------------------------- */
-			// @include('demos/Datebox.demo.js')
+			(function () {
+	var Datebox = new gx.zeyos.Datebox(null, {
+		'timestamp': 0,
+		'unit': 'milliseconds',
+		'format': ['d', '.', 'M', '.', 'y', '&nbsp;', 'h', ':', 'i'],
+		'month': ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Jun.', 'Jul.', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.']
+	});
+
+	var txtTimestamp = new Element('input', {'type': 'number', 'value': (new Date()).getTime()});
+
+	// Demo Injection
+	$(document.body).adopt(__({'children': [
+		{'tag': 'h5', 'html': 'gx.zeyos.Datebox'},
+		{'class': 'p-10 b_t-1 b_b-1', 'child': Datebox.display()},
+		{'class': 'p-10 bg-E', 'children': {
+			btnDateboxSet : {'tag': 'button', 'class': 'm_r-5', 'html': 'Set date', 'onClick': function() {
+				Datebox.set(txtTimestamp.get('value'));
+			}},
+			btnDateboxGet : {'tag': 'button', 'class': 'm_r-5', 'html': 'Get date', 'onClick': function() {
+				alert(Datebox.get());
+			}},
+			label: {'tag': 'label', 'class': 'm_l-10 m_r-5', 'html': 'Timestamp:'},
+			ts : txtTimestamp
+		}}
+	]}));
+})();
+
 
 			/* gx.zeyos.Dropdown
 			-------------------------------------- */

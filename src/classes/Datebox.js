@@ -45,22 +45,22 @@ gx.zeyos.Datebox = new Class({
 			switch (field) {
 				case 'd':
 					name = name || 'day';
-					width = width || 25;
+					width = width || 30;
 				case 'm':
 					name = name || 'month';
-					width = width || 25;
+					width = width || 30;
 				case 'y':
 					name = name || 'year';
-					width = width || 45;
+					width = width || 50;
 				case 'h':
 					name = name || 'hour';
-					width = width || 25;
+					width = width || 30;
 				case 'i':
 					name = name || 'minute';
-					width = width || 25;
+					width = width || 30;
 				case 's':
 					name = name || 'second';
-					width = width || 25;
+					width = width || 30;
 					elem = new Element('input', {'type': 'text', 'styles': {'width': width + 'px', 'text-align': 'center'}});
 					break;
 				case 'M':
@@ -95,7 +95,7 @@ gx.zeyos.Datebox = new Class({
 				var elem = this.buildField(field)
 				if (typeOf(elem) == 'element') {
 					this._display.root.adopt(elem);
-					
+
 					elem.addEvent(elem.get('tag') == 'select' ? 'change' : 'blur', function() {
 						root.update();
 					});

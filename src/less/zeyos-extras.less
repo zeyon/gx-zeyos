@@ -2,6 +2,25 @@
   max-width: 28px;
 }
 
+select {
+  border-radius:.2em;
+  padding:.24em;
+  .b-25;
+  .bg-W;
+  .fc-B8;
+  &:invalid {
+    box-shadow:none;
+    ._bg(#F0D0D0);
+  }
+
+  &:focus { ._bg(#E5E9F0); }
+
+  &:disabled {
+    ._border-color(.2);
+    ._bg(#F5F5F5);
+  }
+}
+
 .hidden { display:none; }
 
 .drp>section { width: 100%; }

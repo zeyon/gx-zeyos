@@ -560,22 +560,22 @@ gx.zeyos.Datebox = new Class({
 			switch (field) {
 				case 'd':
 					name = name || 'day';
-					width = width || 25;
+					width = width || 30;
 				case 'm':
 					name = name || 'month';
-					width = width || 25;
+					width = width || 30;
 				case 'y':
 					name = name || 'year';
-					width = width || 45;
+					width = width || 50;
 				case 'h':
 					name = name || 'hour';
-					width = width || 25;
+					width = width || 30;
 				case 'i':
 					name = name || 'minute';
-					width = width || 25;
+					width = width || 30;
 				case 's':
 					name = name || 'second';
-					width = width || 25;
+					width = width || 30;
 					elem = new Element('input', {'type': 'text', 'styles': {'width': width + 'px', 'text-align': 'center'}});
 					break;
 				case 'M':
@@ -610,7 +610,7 @@ gx.zeyos.Datebox = new Class({
 				var elem = this.buildField(field)
 				if (typeOf(elem) == 'element') {
 					this._display.root.adopt(elem);
-					
+
 					elem.addEvent(elem.get('tag') == 'select' ? 'change' : 'blur', function() {
 						root.update();
 					});
@@ -2049,6 +2049,8 @@ gx.zeyos.Request = new Class({
 		if (typeOf(options.showError) == 'function') {
 			this.showError = options.showError;
 		}
+		
+		this.baseUrl = '../remotecall/'+this.options.service+(this.options.accesskey ? ':'+this.options.accesskey : '')+'/';
 	},
 
 	/**
@@ -2072,7 +2074,7 @@ gx.zeyos.Request = new Class({
 	 */
 	send: function(path, data, callback, method) {
 		var reqOptions = {
-			'url': '../remotecall/'+this.options.service+(this.options.accesskey ? ':'+this.options.accesskey : '')+'/'+path,
+			'url': this.baseUrl + path,
 			'method': method,
 			'data': data,
 			'onRequest': function() {
@@ -2126,6 +2128,7 @@ gx.zeyos.Request = new Class({
 		req.send();
 		this._files = [];
 	},
+	
 	/**
 	 * @method showError
 	 * @description Displays an error message
@@ -2135,6 +2138,16 @@ gx.zeyos.Request = new Class({
 		// ZeyOSApi.showMsgRuntimeError(err);
 		alert(err);
 	},
+	
+	/**
+	 * @method openLink
+	 * @description Opens a link in new window
+	 * @param {string} path The REST path (e.g. "list/") - please mind the exact name of your resource (e.g. mind trailing slashes)
+	 */
+	openLink: function(path) {
+		window.open(this.baseUrl + path, '_blank');
+	},
+	
 	/**
 	 * @method upload
 	 * @description Performs a POST request with file upload
@@ -2147,6 +2160,7 @@ gx.zeyos.Request = new Class({
 		this._files = files;
 		this.send(path, data, callback, 'POST');
 	},
+	
 	/**
 	 * @method post
 	 * @description Performs a POST request
@@ -2157,6 +2171,7 @@ gx.zeyos.Request = new Class({
 	'post': function(path, data, callback) {
 		this.send(path, data, callback, 'POST');
 	},
+	
 	/**
 	 * @method get
 	 * @description Performs a GET request
@@ -2167,6 +2182,7 @@ gx.zeyos.Request = new Class({
 	'get': function(path, data, callback) {
 		this.send(path, data, callback, 'GET');
 	},
+	
 	/**
 	 * @method put
 	 * @description Performs a PUT request
@@ -2177,6 +2193,7 @@ gx.zeyos.Request = new Class({
 	'put': function(path, data, callback) {
 		this.send(path, data, callback, 'PUT');
 	},
+	
 	/**
 	 * @method delete
 	 * @description Performs a DELETE request
@@ -2511,7 +2528,7 @@ gx.zeyos.Select = new Class({
 	 */
 	getLink: function(elem) {
 		return new Element('div', {
-			'class': 'sel_item ico',
+			'class': 'sel_item',
 			'html': elem[this.options.elementLabel]
 		});
 	},
