@@ -183,7 +183,7 @@ gx.zeyos.Dialog = new Class({
 		Object.each(form, function(elem, key) {
 			// Add the label
 			content.push({'tag': 'p', 'html': elem[0] == null ? '' :elem[0], 'class': m});
-			m = 'm_t-1M'; // Margin for following elements
+			m = 'm_t-M'; // Margin for following elements
 
 			// Add the field
 			content.push(elem[1]);

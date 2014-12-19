@@ -30,6 +30,7 @@ gx.zeyos.Datebox = new Class({
 		try {
 			this.parent(display, options);
 			this.build();
+			this.set(this.options.timestamp == 0 ? new Date() : this.options.timestamp);
 		} catch(e) { gx.util.Console('gx.zeyos.Datebox->initialize', e.message); }
 	},
 
@@ -143,13 +144,18 @@ gx.zeyos.Datebox = new Class({
 	 */
 	set: function(timestamp, unit) {
 		try {
-			timestamp = parseInt(timestamp, 10);
-			if (unit == null)
-				unit = this.options.unit;
-			if (unit == 'seconds')
-				timestamp = timestamp * 1000;
+			var d;
+			if (timestamp instanceof Date) {
+				d = timestamp;
+			} else {
+				timestamp = parseInt(timestamp, 10);
+				if (unit == null)
+					unit = this.options.unit;
+				if (unit == 'seconds')
+					timestamp = timestamp * 1000;
 
-			var d = new Date(timestamp);
+				d = new Date(timestamp);
+			}
 
 			if (this._fields.day)
 				this._fields.day.set('value', this.addZero(d.getDate()));
