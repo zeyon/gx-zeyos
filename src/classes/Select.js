@@ -209,7 +209,7 @@ gx.zeyos.Select = new Class({
 	 */
 	set: function (selection, noEvents) {
 		this._selected = selection;
-		return this.update(noEvents != false);
+		return this.update(noEvents !== false);
 	},
 
 	/**
@@ -299,11 +299,9 @@ gx.zeyos.Select = new Class({
 			this._currentElem = null;
 
 			if (this.options.resetable) {
-				this._display.dropdown.adopt(__({'tag': 'li', 'child':
-					{'tag': 'a', 'class': 'reset', 'html': this.options.resetable, 'onClick': function() {
-						this.set();
-					}.bind(this)}
-				}));
+				this._display.dropdown.adopt(__({'class': 'sel_item reset', 'html': this.options.resetable, 'onClick': function() {
+					this.set();
+				}.bind(this)}));
 			}
 
 			var addCLink = function (link, el) {

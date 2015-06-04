@@ -105,6 +105,8 @@ gx.zeyos.Checklist = new Class({
 		'url': false,
 		'requestData': {},
 		'listValue': 'ID',
+        'listActive': 'on',
+        'defaultState': false,
 		'listFormat': function(elem) {
 			return elem.label;
 		}
@@ -166,7 +168,10 @@ gx.zeyos.Checklist = new Class({
 		try {
 			var elem = {
 				'value': this.options.listFormat(item),
-				'input': new gx.zeyos.Toggle(null, {'value': item[this.options.listValue]})
+				'input': new gx.zeyos.Toggle(null, {
+                    'value': item[this.options.listValue],
+                    'on'   : item[this.options.listActive] == null ? this.options.defaultState : item[this.options.listActive]
+                })
 			}
 
 			elem.row = new Element('tr', {'class': 'em'+this._bg});
@@ -180,7 +185,7 @@ gx.zeyos.Checklist = new Class({
 			elem.row.adopt(td2);
 			this._display.table.adopt(elem.row);
 			this._elems.push(elem);
-			this._bg = this._bg == '' ? ' bg-FA' : '';
+			this._bg = this._bg === '' ? ' bg-FA' : '';
 		} catch(e) { gx.util.Console('gx.zeyos.Checklist->addItem', e.message); }
 	},
 
@@ -2040,6 +2045,11 @@ gx.zeyos.Popup = new Class({
  * @option {string} service
  * @option {string} accesskey
  *
+ * @event error (Message, Response, Header)
+ * @event failure
+ * @event exception
+ * @event success
+ *
  * @sample Msgbox Try the different messagebox types with custom text.
  */
 gx.zeyos.Request = new Class({
@@ -2090,36 +2100,47 @@ gx.zeyos.Request = new Class({
 				this.fireEvent('complete');
 			}.bind(this),
 			'onFailure': function(xhr) {
-				if (xhr.responseText != '') {
+                this.fireEvent('failure', xhr);
+				if (xhr.responseText !== '') {
 					var json = xhr.responseText;
 					res = JSON.decode(json);
 					if (typeOf(res) == 'object') {
 						if (res.error != null)
-							this.showError('Error: '+res.error);
+							this.fireEvent('error', 'Error: '+res.error);
 						else
-							this.showError('Server error (' + xhr.status + ') ' + json);
+                            this.fireEvent('error', 'Server error (' + xhr.status + ') ' + json);
 					}
-					this.fireEvent('failure', json);
 				}
-				this.fireEvent('failure');
 			}.bind(this),
+            'onException': function(headerName, json) {
+                this.fireEvent('exception', [json, headerName]);
+                res = JSON.decode(json);
+                if (typeOf(res) == 'object') {
+                    if (res.error != null) {
+                        this.fireEvent('error', 'Error: ' + res.error);
+                    } else if (res.result == null) {
+                        this.fireEvent('error', 'Invalid response (no result): '+json);
+                    } else {
+                        callback(res.result, headerName);
+                    }
+                } else {
+                    this.fireEvent('error', 'Invalid response: ' + json);
+                }
+            }.bind(this),
 			'onSuccess': function(json) {
 				this.fireEvent('success', json);
-				res = JSON.decode(json);
-				if (typeOf(res) == 'object') {
-					if (res.error != null) {
-						console.log('gx.zeyos.Request: ', res.error);
-						this.showError('Error: '+res.error);
-						this.fireEvent('failure', json);
-					} else if (res.result == null) {
-						console.log('gx.zeyos.Request: Invalid response (no result) - ', json);
-						this.showError('Invalid response (no result): '+json);
-						this.fireEvent('failure', json);
-					} else
-						callback(res.result);
-				} else {
-					this.showError('Invalid response: '+json);
-				}
+                res = JSON.decode(json);
+                if (typeOf(res) == 'object') {
+                    if (res.error != null) {
+                        this.fireEvent('error', 'Error: ' + res.error);
+                    } else if (res.result == null) {
+                        this.fireEvent('error', 'Invalid response (no result): '+json);
+                    } else {
+                        callback(res.result, '200 OK');
+                    }
+                } else {
+                    this.fireEvent('error', 'Invalid response: ' + json);
+                }
 			}.bind(this)
 		};
 		var req;
@@ -2472,7 +2493,7 @@ gx.zeyos.Select = new Class({
 	 */
 	set: function (selection, noEvents) {
 		this._selected = selection;
-		return this.update(noEvents != false);
+		return this.update(noEvents !== false);
 	},
 
 	/**
@@ -2562,11 +2583,9 @@ gx.zeyos.Select = new Class({
 			this._currentElem = null;
 
 			if (this.options.resetable) {
-				this._display.dropdown.adopt(__({'tag': 'li', 'child':
-					{'tag': 'a', 'class': 'reset', 'html': this.options.resetable, 'onClick': function() {
-						this.set();
-					}.bind(this)}
-				}));
+				this._display.dropdown.adopt(__({'class': 'sel_item reset', 'html': this.options.resetable, 'onClick': function() {
+					this.set();
+				}.bind(this)}));
 			}
 
 			var addCLink = function (link, el) {

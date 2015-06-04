@@ -6,6 +6,11 @@
  * @option {string} service
  * @option {string} accesskey
  *
+ * @event error (Message, Response, Header)
+ * @event failure
+ * @event exception
+ * @event success
+ *
  * @sample Msgbox Try the different messagebox types with custom text.
  */
 gx.zeyos.Request = new Class({
@@ -56,36 +61,47 @@ gx.zeyos.Request = new Class({
 				this.fireEvent('complete');
 			}.bind(this),
 			'onFailure': function(xhr) {
-				if (xhr.responseText != '') {
+                this.fireEvent('failure', xhr);
+				if (xhr.responseText !== '') {
 					var json = xhr.responseText;
 					res = JSON.decode(json);
 					if (typeOf(res) == 'object') {
 						if (res.error != null)
-							this.showError('Error: '+res.error);
+							this.fireEvent('error', 'Error: '+res.error);
 						else
-							this.showError('Server error (' + xhr.status + ') ' + json);
+                            this.fireEvent('error', 'Server error (' + xhr.status + ') ' + json);
 					}
-					this.fireEvent('failure', json);
 				}
-				this.fireEvent('failure');
 			}.bind(this),
+            'onException': function(headerName, json) {
+                this.fireEvent('exception', [json, headerName]);
+                res = JSON.decode(json);
+                if (typeOf(res) == 'object') {
+                    if (res.error != null) {
+                        this.fireEvent('error', 'Error: ' + res.error);
+                    } else if (res.result == null) {
+                        this.fireEvent('error', 'Invalid response (no result): '+json);
+                    } else {
+                        callback(res.result, headerName);
+                    }
+                } else {
+                    this.fireEvent('error', 'Invalid response: ' + json);
+                }
+            }.bind(this),
 			'onSuccess': function(json) {
 				this.fireEvent('success', json);
-				res = JSON.decode(json);
-				if (typeOf(res) == 'object') {
-					if (res.error != null) {
-						console.log('gx.zeyos.Request: ', res.error);
-						this.showError('Error: '+res.error);
-						this.fireEvent('failure', json);
-					} else if (res.result == null) {
-						console.log('gx.zeyos.Request: Invalid response (no result) - ', json);
-						this.showError('Invalid response (no result): '+json);
-						this.fireEvent('failure', json);
-					} else
-						callback(res.result);
-				} else {
-					this.showError('Invalid response: '+json);
-				}
+                res = JSON.decode(json);
+                if (typeOf(res) == 'object') {
+                    if (res.error != null) {
+                        this.fireEvent('error', 'Error: ' + res.error);
+                    } else if (res.result == null) {
+                        this.fireEvent('error', 'Invalid response (no result): '+json);
+                    } else {
+                        callback(res.result, '200 OK');
+                    }
+                } else {
+                    this.fireEvent('error', 'Invalid response: ' + json);
+                }
 			}.bind(this)
 		};
 		var req;

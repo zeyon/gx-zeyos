@@ -29,6 +29,8 @@ gx.zeyos.Checklist = new Class({
 		'url': false,
 		'requestData': {},
 		'listValue': 'ID',
+        'listActive': 'on',
+        'defaultState': false,
 		'listFormat': function(elem) {
 			return elem.label;
 		}
@@ -90,7 +92,10 @@ gx.zeyos.Checklist = new Class({
 		try {
 			var elem = {
 				'value': this.options.listFormat(item),
-				'input': new gx.zeyos.Toggle(null, {'value': item[this.options.listValue]})
+				'input': new gx.zeyos.Toggle(null, {
+                    'value': item[this.options.listValue],
+                    'on'   : item[this.options.listActive] == null ? this.options.defaultState : item[this.options.listActive]
+                })
 			}
 
 			elem.row = new Element('tr', {'class': 'em'+this._bg});
@@ -104,7 +109,7 @@ gx.zeyos.Checklist = new Class({
 			elem.row.adopt(td2);
 			this._display.table.adopt(elem.row);
 			this._elems.push(elem);
-			this._bg = this._bg == '' ? ' bg-FA' : '';
+			this._bg = this._bg === '' ? ' bg-FA' : '';
 		} catch(e) { gx.util.Console('gx.zeyos.Checklist->addItem', e.message); }
 	},
 
